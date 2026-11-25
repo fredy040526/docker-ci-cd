@@ -23,6 +23,11 @@ public class testController {
 		return "Hola estudiantes de la 15B";
 	}
 
+	@GetMapping(value = "/parcial")
+	public String parcial() {
+		return "este es mi parcial";
+	}
+
 	@GetMapping(value = "/saludando")
 	public String helloOtraPromo() {
 		return "Hola estudiantes de la 16B";
