@@ -9,53 +9,42 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "3307:3306"
-    restart: unless-stopped
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./mysql/init:/docker-entrypoint-initdb.d
+      - ./mysql/init:/docker-entypointe-initdb.d
     networks:
       - red-data
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
-      start_period: 30s
-
+    restart: unless-stopped
   backend:
-    build: ./test15b
+    image: fredy0405/backend-spring-16b:latest
     container_name: backend_spring
-    ports:
+    ports: 
       - "8090:8080"
     depends_on:
-      mysql-db:
-        condition: service_healthy
-    restart: unless-stopped
+      - mysql-db
     environment:
-      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-db:3306/test?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC"
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/test
       SPRING_DATASOURCE_USERNAME: appuser
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
     networks:
       - red-app
       - red-data
-
+    restart: unless-stopped
   frontend:
     build: ./frontend_test
     container_name: frontend-html
     ports:
       - "8081:80"
-    depends_on:
+    depends_on:  
       - backend
-    restart: unless-stopped
     networks:
       - red-app
-
+    restart: unless-stopped
 networks:
   red-app:
     driver: bridge
   red-data:
     driver: bridge
     internal: true
-
 volumes:
   mysql_data:
