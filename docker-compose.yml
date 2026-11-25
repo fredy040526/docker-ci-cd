@@ -31,7 +31,7 @@ services:
       - red-data
     restart: unless-stopped
   frontend:
-    build: ./frontend_test
+    image: fredy0405/frontend-html:latest
     container_name: frontend-html
     ports:
       - "8081:80"
